@@ -11,6 +11,9 @@ device = "cuda:0" if torch.cuda.is_available() else "cpu"
 model.to(device)
 print("YOLO device:", device)
 
+PERSON_CLASS_ID = 0        # COCO: 0 = person [web:515]
+PERSON_CONF_MIN = 0.75
+
 # zoom partagé entre les requêtes
 zoom_factor = 1.0   # 1.0 = pas de zoom
 ZOOM_MIN = 1.0
@@ -54,8 +57,24 @@ def gen_frames():
             imgsz=640,
             verbose=False,
             device=device,
+            classes=[PERSON_CLASS_ID],  # ne garde que person [web:504][web:508]
+
         )
         r = results[0]
+
+        ### Detected Persons Filtering
+        # Si tu veux savoir s'il y a au moins une personne sûre > 0.75
+        person_boxes = []
+        for box in r.boxes:
+            cls_id = int(box.cls[0].item())
+            conf = float(box.conf[0].item())
+            if cls_id == PERSON_CLASS_ID and conf >= PERSON_CONF_MIN:
+                person_boxes.append((cls_id, conf))
+
+        if person_boxes:
+            # ici tu peux logger / déclencher une action
+            print(f"{len(person_boxes)} personne(s) détectée(s) ≥ {PERSON_CONF_MIN}")
+
         annotated_frame = r.plot()
 
         ret, buffer = cv2.imencode(".jpg", annotated_frame)
