@@ -1,0 +1,19 @@
+[project]
+name = "spy"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Votre Nom",email = "Vous@exemple.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "opencv-python-headless (>=4.13.0.90,<5.0.0.0)",
+    "flask (>=3.1.2,<4.0.0)",
+    "ultralytics (>=8.4.6,<9.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

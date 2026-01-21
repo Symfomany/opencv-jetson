@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  yolo_cam:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: yolo_cam
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+    network_mode: host
+    devices:
+      - /dev/video0:/dev/video0
+    volumes:
+      - .:/workspace
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    restart: unless-stopped
